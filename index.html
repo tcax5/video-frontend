@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mini Video Site</title>
+</head>
+<body>
+  <h1>🎥 Mini Video Site</h1>
+
+  <h3>上传视频</h3>
+  <input type="file" id="videoInput">
+  <button onclick="uploadVideo()">上传</button>
+
+  <h3>视频列表</h3>
+  <div id="videoList"></div>
+
+  <script>
+    const backend = "https://your-backend.onrender.com"; // 待会换成你的后端地址
+
+    async function uploadVideo() {
+      const file = document.getElementById("videoInput").files[0];
+      const formData = new FormData();
+      formData.append("video", file);
+
+      let res = await fetch(backend + "/upload", {
+        method: "POST",
+        body: formData
+      });
+      alert("上传成功！");
+      loadVideos();
+    }
+
+    async function loadVideos() {
+      let res = await fetch(backend + "/list");
+      let videos = await res.json();
+      const list = document.getElementById("videoList");
+      list.innerHTML = "";
+      videos.forEach(v => {
+        let video = document.createElement("video");
+        video.src = backend + v;
+        video.controls = true;
+        video.width = 400;
+        list.appendChild(video);
+      });
+    }
+
+    loadVideos();
+  </script>
+</body>
+</html>
